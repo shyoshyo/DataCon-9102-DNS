@@ -4,6 +4,8 @@
 
 # Slides
 
+[Slides](https://github.com/shyoshyo/Datacon-9102-DNS/releases/download/v1.0/slides.pdf)
+
 ![](./fig/slides.jpg)
 
 # Result
