@@ -1,0 +1,4 @@
+#!/bin/sh
+
+tshark -r not_common.pcap -Y "" -T fields -e ip.src -e dns.qry.name | gawk '{ip = $1; domain = $2; if(last[ip] != domain) {last[ip] = domain; split(domain, a, "."); tld = a[length(a)]; count[ip, tld] += 1; count_2[ip] += 1}} END {check["biz"] = 0.2; check["net"] = 0.133334; check["org"] = 0.2; check["info"] = 0.2; check["com"] = 0.266666; printf "ip\t"; for(tld in check) printf "#%s\t", tld; printf "#other\t||\t"; for(tld in check) printf "%s_%.6lf\t", tld, check[tld]; printf "||\tentropy\n"; for(ip in last){ s = 0; entropy = 0; display = 1; for(tld in check) if(! (ip, tld) in count) display = 0; else s += count[ip, tld]; if(display == 0) continue; printf "%s\t", ip; for(tld in check) printf "%d\t", count[ip, tld]; printf "%d\t\t", count_2[ip] - s; for(tld in check) {prob = count[ip, tld] / s; printf "%.10lf\t", prob; entropy -= prob * log(check[tld] / prob);} printf "\t%.10lf\n", entropy}}'
+
